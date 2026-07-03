@@ -198,7 +198,7 @@
             {n:"Camiseta Basica",d:"100% algodao",p:"49,90",o:"79,90",i:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=70",c:"cam"},
             {n:"Jaqueta Couro",d:"Couro sintetico",p:"449,90",o:"599,90",i:"https://images.unsplash.com/photo-1520975954732-35dd22299614?w=200&q=70",c:"jaq"},
             {n:"Tenis Casual",d:"Dia a dia",p:"199,90",o:"279,90",i:"https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=200&q=70",c:"ten"},
-            {n:"Bone Snapback",d:"Ajustavel",p:"69,90",o:"99,90",i:"https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=200&q=70",c:"ace"},
+            {n:"Bone Snapback",d:"Ajustavel",p:"69,90",o:"99,90",i:"https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=200&q=70",c:"ace"},
             {n:"Mochila Tech",d:"Notebook 15pol",p:"189,90",o:"259,90",i:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&q=70",c:"ace"},
             {n:"Camiseta Estampa",d:"Ed. limitada",p:"79,90",o:"119,90",i:"https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=70",c:"cam"},
         ];
@@ -218,6 +218,15 @@
             if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light');
         }
         render('all');
+        // Mouse drag scroll for desktop/web
+        document.querySelectorAll('.carousel').forEach(el=>{
+            let isDown=false,startX,scrollL;
+            el.addEventListener('mousedown',e=>{isDown=true;el.style.cursor='grabbing';startX=e.pageX-el.offsetLeft;scrollL=el.scrollLeft;});
+            el.addEventListener('mouseleave',()=>{isDown=false;el.style.cursor='grab';});
+            el.addEventListener('mouseup',()=>{isDown=false;el.style.cursor='grab';});
+            el.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-el.offsetLeft;el.scrollLeft=scrollL-(x-startX);});
+            el.style.cursor='grab';
+        });
     </script>
 </body>
 </html>
