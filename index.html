@@ -3,311 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ModaStyle - Catalogo</title>
+    <title>ModaStyle</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #1a1a2e;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
         .header {
-            padding: 16px 20px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            position: sticky;
+            top: 0;
+            background: #1a1a2e;
+            z-index: 10;
         }
-        .header h1 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .header .cart {
+        .header h1 { font-size: 18px; }
+        .cart {
             background: #00b894;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .banner {
+            margin: 12px 16px;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 14px;
+            text-align: center;
+        }
+        .banner h2 { font-size: 15px; margin-bottom: 4px; }
+        .banner p { font-size: 12px; opacity: 0.8; }
+        .categories {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn {
             padding: 8px 16px;
             border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: #fff;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .cat-btn.active { background: #00b894; border-color: #00b894; }
+        .section-title {
+            padding: 14px 16px 8px;
             font-size: 13px;
             font-weight: 600;
-        }
-        .section-title {
-            padding: 20px 20px 12px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #aaa;
+            color: #888;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
-        /* Carousel */
-        .carousel-container {
-            padding: 0 0 0 20px;
+        .carousel {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 16px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            display: flex;
-            gap: 14px;
-            padding-bottom: 20px;
             scrollbar-width: none;
         }
-        .carousel-container::-webkit-scrollbar { display: none; }
+        .carousel::-webkit-scrollbar { display: none; }
         .card {
             scroll-snap-align: start;
-            min-width: 260px;
-            max-width: 260px;
+            min-width: 200px;
+            max-width: 200px;
             background: #16213e;
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
             flex-shrink: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
         }
-        .card:active { transform: scale(0.97); }
         .card img {
             width: 100%;
-            height: 180px;
+            height: 140px;
             object-fit: cover;
+            background: #0f0f23;
         }
         .card-body {
-            padding: 14px 16px;
+            padding: 10px 12px 12px;
         }
-        .card-body h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .card-body .desc {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 10px;
-        }
-        .card-body .price-row {
+        .card-body h3 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .card-body .desc { font-size: 11px; color: #666; margin-bottom: 8px; }
+        .price-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .card-body .price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #00b894;
-        }
-        .card-body .old-price {
-            font-size: 13px;
-            color: #666;
-            text-decoration: line-through;
-            margin-left: 8px;
-        }
+        .price { font-size: 14px; font-weight: 700; color: #00b894; }
+        .old-price { font-size: 11px; color: #555; text-decoration: line-through; margin-left: 6px; }
         .btn-buy {
             background: #00b894;
             border: none;
             color: #fff;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
         }
         .btn-buy:active { background: #00a383; }
-        /* Categories */
-        .categories {
-            display: flex;
-            gap: 10px;
-            padding: 0 20px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            margin-bottom: 8px;
-        }
-        .categories::-webkit-scrollbar { display: none; }
-        .cat-btn {
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: transparent;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .cat-btn.active {
-            background: #00b894;
-            border-color: #00b894;
-        }
-        .cat-btn:active { transform: scale(0.95); }
-        /* Banner */
-        .banner {
-            margin: 16px 20px;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            text-align: center;
-        }
-        .banner h2 { font-size: 18px; margin-bottom: 6px; }
-        .banner p { font-size: 13px; opacity: 0.8; }
-        /* Bottom nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background: #0f0f23;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.08);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            padding: 10px 0;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
         }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #666;
-            font-size: 11px;
-            cursor: pointer;
-            transition: color 0.2s;
+            gap: 3px;
+            color: #555;
+            font-size: 10px;
         }
         .nav-item.active { color: #00b894; }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
-        .spacer { height: 80px; }
-        /* Toast */
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .spacer { height: 70px; }
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 75px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%) translateY(80px);
             background: #00b894;
             color: #fff;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: 600;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             z-index: 100;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>ModaStyle</h1>
-        <div class="cart" id="cartBtn">🛒 0 itens</div>
+        <h1>🛍 ModaStyle</h1>
+        <div class="cart" id="cartBtn">🛒 0</div>
     </div>
-
     <div class="banner">
         <h2>🔥 MEGA SALE - Ate 60% OFF</h2>
-        <p>Aproveite os melhores precos da temporada</p>
+        <p>Melhores precos da temporada</p>
     </div>
-
     <div class="categories">
-        <button class="cat-btn active" onclick="filterCat('all')">Todos</button>
-        <button class="cat-btn" onclick="filterCat('camisetas')">Camisetas</button>
-        <button class="cat-btn" onclick="filterCat('jaquetas')">Jaquetas</button>
-        <button class="cat-btn" onclick="filterCat('tenis')">Tenis</button>
-        <button class="cat-btn" onclick="filterCat('acessorios')">Acessorios</button>
+        <button class="cat-btn active" onclick="filter('all',this)">Todos</button>
+        <button class="cat-btn" onclick="filter('cam',this)">Camisetas</button>
+        <button class="cat-btn" onclick="filter('jaq',this)">Jaquetas</button>
+        <button class="cat-btn" onclick="filter('ten',this)">Tenis</button>
+        <button class="cat-btn" onclick="filter('ace',this)">Acessorios</button>
     </div>
-
     <p class="section-title">✨ Destaques</p>
-    <div class="carousel-container" id="carousel1"></div>
-
+    <div class="carousel" id="c1"></div>
     <p class="section-title">🆕 Novidades</p>
-    <div class="carousel-container" id="carousel2"></div>
-
+    <div class="carousel" id="c2"></div>
     <p class="section-title">💰 Ofertas</p>
-    <div class="carousel-container" id="carousel3"></div>
-
+    <div class="carousel" id="c3"></div>
     <div class="spacer"></div>
-
     <div class="bottom-nav">
-        <div class="nav-item active">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </div>
-        <div class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
-            <span>Buscar</span>
-        </div>
-        <div class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span>Favoritos</span>
-        </div>
-        <div class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            <span>Carrinho</span>
-        </div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 5L20.49 19l-5-5z"/></svg><span>Buscar</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span>Favoritos</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45A2 2 0 007 16h12v-2H7.42l.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0020.01 4H5.21l-.94-2H1z"/></svg><span>Carrinho</span></div>
     </div>
-
-    <div class="toast" id="toast">✅ Adicionado ao carrinho!</div>
-
+    <div class="toast" id="toast"></div>
     <script>
-        // Telegram WebApp integration
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
-        const products = [
-            {name:"Camiseta Premium", desc:"Algodao organico", price:"R$ 89,90", oldPrice:"R$ 129,90", img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400", cat:"camisetas"},
-            {name:"Jaqueta Urban", desc:"Impermeavel, moderna", price:"R$ 249,90", oldPrice:"R$ 349,90", img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400", cat:"jaquetas"},
-            {name:"Tenis Runner", desc:"Ultra leve", price:"R$ 399,90", oldPrice:"R$ 499,90", img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", cat:"tenis"},
-            {name:"Camiseta Basica", desc:"100% algodao", price:"R$ 49,90", oldPrice:"R$ 79,90", img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400", cat:"camisetas"},
-            {name:"Jaqueta Couro", desc:"Couro sintetico", price:"R$ 449,90", oldPrice:"R$ 599,90", img:"https://images.unsplash.com/photo-1520975954732-35dd22299614?w=400", cat:"jaquetas"},
-            {name:"Tenis Casual", desc:"Dia a dia", price:"R$ 199,90", oldPrice:"R$ 279,90", img:"https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400", cat:"tenis"},
-            {name:"Bone Snapback", desc:"Ajustavel", price:"R$ 69,90", oldPrice:"R$ 99,90", img:"https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=400", cat:"acessorios"},
-            {name:"Mochila Tech", desc:"Compartimento notebook", price:"R$ 189,90", oldPrice:"R$ 259,90", img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400", cat:"acessorios"},
-            {name:"Camiseta Estampada", desc:"Edicao limitada", price:"R$ 79,90", oldPrice:"R$ 119,90", img:"https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400", cat:"camisetas"},
+        const tg=window.Telegram.WebApp;tg.ready();tg.expand();
+        const P=[
+            {n:"Camiseta Premium",d:"Algodao organico",p:"89,90",o:"129,90",i:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&q=70",c:"cam"},
+            {n:"Jaqueta Urban",d:"Impermeavel",p:"249,90",o:"349,90",i:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&q=70",c:"jaq"},
+            {n:"Tenis Runner",d:"Ultra leve",p:"399,90",o:"499,90",i:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=70",c:"ten"},
+            {n:"Camiseta Basica",d:"100% algodao",p:"49,90",o:"79,90",i:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=70",c:"cam"},
+            {n:"Jaqueta Couro",d:"Couro sintetico",p:"449,90",o:"599,90",i:"https://images.unsplash.com/photo-1520975954732-35dd22299614?w=200&q=70",c:"jaq"},
+            {n:"Tenis Casual",d:"Dia a dia",p:"199,90",o:"279,90",i:"https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=200&q=70",c:"ten"},
+            {n:"Bone Snapback",d:"Ajustavel",p:"69,90",o:"99,90",i:"https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=200&q=70",c:"ace"},
+            {n:"Mochila Tech",d:"Notebook 15pol",p:"189,90",o:"259,90",i:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&q=70",c:"ace"},
+            {n:"Camiseta Estampa",d:"Ed. limitada",p:"79,90",o:"119,90",i:"https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=70",c:"cam"},
         ];
-
-        let cartCount = 0;
-
-        function createCard(p) {
-            return `<div class="card">
-                <img src="${p.img}" alt="${p.name}">
-                <div class="card-body">
-                    <h3>${p.name}</h3>
-                    <p class="desc">${p.desc}</p>
-                    <div class="price-row">
-                        <div><span class="price">${p.price}</span><span class="old-price">${p.oldPrice}</span></div>
-                        <button class="btn-buy" onclick="addToCart('${p.name}')">Comprar</button>
-                    </div>
-                </div>
-            </div>`;
+        let cart=0;
+        function card(p){return`<div class="card"><img src="${p.i}" loading="lazy" alt="${p.n}"><div class="card-body"><h3>${p.n}</h3><p class="desc">${p.d}</p><div class="price-row"><div><span class="price">R$${p.p}</span><span class="old-price">R$${p.o}</span></div><button class="btn-buy" onclick="buy('${p.n}')">Comprar</button></div></div></div>`;}
+        function render(f){
+            const d=f==='all'?P:P.filter(x=>x.c===f);
+            document.getElementById('c1').innerHTML=d.slice(0,3).map(card).join('');
+            document.getElementById('c2').innerHTML=d.slice(3,6).map(card).join('');
+            document.getElementById('c3').innerHTML=d.slice(6,9).map(card).join('');
         }
-
-        function renderCarousels(filter) {
-            const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
-            const c1 = filtered.slice(0, 3);
-            const c2 = filtered.slice(3, 6);
-            const c3 = filtered.slice(6, 9);
-            document.getElementById('carousel1').innerHTML = c1.map(createCard).join('');
-            document.getElementById('carousel2').innerHTML = c2.map(createCard).join('');
-            document.getElementById('carousel3').innerHTML = c3.map(createCard).join('');
+        function filter(c,el){document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');render(c);}
+        function buy(n){
+            cart++;document.getElementById('cartBtn').textContent=`🛒 ${cart}`;
+            const t=document.getElementById('toast');t.textContent=`✅ ${n} adicionado!`;t.classList.add('show');
+            setTimeout(()=>t.classList.remove('show'),1500);
+            if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light');
         }
-
-        function filterCat(cat) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderCarousels(cat);
-        }
-
-        function addToCart(name) {
-            cartCount++;
-            document.getElementById('cartBtn').textContent = `🛒 ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}`;
-            const toast = document.getElementById('toast');
-            toast.textContent = `✅ ${name} adicionado!`;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-            // Haptic feedback
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        }
-
-        renderCarousels('all');
+        render('all');
     </script>
 </body>
 </html>
